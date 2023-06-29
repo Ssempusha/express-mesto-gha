@@ -11,7 +11,6 @@ const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .orFail(new Error('ValidationError'))
     .then((user) => {
       res.status(CREATED).send(user);
     })
@@ -38,8 +37,11 @@ const getUsers = (req, res) => {
 // возвращает пользователя по _id
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(new Error('CastError'))
     .then((user) => {
+      if (!user) {
+        res.status(ERROR_NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден' });
+        return;
+      }
       res.send(user);
     })
     .catch((error) => {
