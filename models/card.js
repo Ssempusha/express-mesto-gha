@@ -29,8 +29,4 @@ const cardSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-
-// создаём модель и экспортируем её
-const User = mongoose.model('card', cardSchema);
-
-module.exports = User;
+module.exports = mongoose.model('card', cardSchema);
