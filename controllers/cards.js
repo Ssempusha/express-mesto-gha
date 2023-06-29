@@ -3,6 +3,7 @@ const Card = require('../models/card');
 const ERROR_BAD_REQ = 400;
 const ERROR_NOT_FOUND = 404;
 const ERROR_SERVER = 500;
+const CREATED = 201;
 
 // создаёт карточку
 const createCard = (req, res) => {
@@ -10,8 +11,9 @@ const createCard = (req, res) => {
   const owner = req.user._id;
 
   Card.create({ name, link, owner })
+    .orFail(new Error('ValidationError'))
     .then((card) => {
-      res.send(card);
+      res.status(CREATED).send(card);
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
@@ -36,16 +38,13 @@ const getCards = (req, res) => {
 // удаляет карточку по идентификатору
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .orFail(new Error('CastError'))
     .then((card) => {
-      if (!card) {
-        res.status(ERROR_NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
-        return;
-      }
       res.send(card);
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(ERROR_BAD_REQ).send({ message: 'Переданы некорректные данные при удалении карточки' });
+        res.status(ERROR_NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
       } else {
         res.status(ERROR_SERVER).send({ message: 'На сервере произошла ошибка' });
       }

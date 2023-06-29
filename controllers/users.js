@@ -3,6 +3,7 @@ const User = require('../models/user');
 const ERROR_BAD_REQ = 400;
 const ERROR_NOT_FOUND = 404;
 const ERROR_SERVER = 500;
+const CREATED = 201;
 
 // req - запрос, который прислали. res - ответ
 // создаёт пользователя
@@ -10,8 +11,9 @@ const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
+    .orFail(new Error('ValidationError'))
     .then((user) => {
-      res.send(user);
+      res.status(CREATED).send(user);
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
@@ -36,11 +38,8 @@ const getUsers = (req, res) => {
 // возвращает пользователя по _id
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
+    .orFail(new Error('CastError'))
     .then((user) => {
-      if (!user) {
-        res.status(ERROR_NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден' });
-        return;
-      }
       res.send(user);
     })
     .catch((error) => {
@@ -55,6 +54,7 @@ const getUserById = (req, res) => {
 // обновляет профиль
 const updateUser = (req, res) => {
   const { name, about } = req.body;
+
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
