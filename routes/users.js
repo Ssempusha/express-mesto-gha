@@ -10,7 +10,11 @@ const {
 // при обращении к get '/users' и т.д выполнится createUser и т.д
 router.get('/', getUsers); // возвращает всех пользователей
 router.get('/me', getUserInfo); // возвращает информацию о текущем пользователе
-router.get('/:userId', getUserById); // возвращает пользователя по _id
+router.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().length(24).hex(),
+  }),
+}), getUserById); // возвращает пользователя по _id
 router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
