@@ -37,8 +37,9 @@ const createUser = (req, res, next) => {
             next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
           } else if (err.code === 11000) {
             next(new ConflictError('Пользователь с таким email уже существует'));
+          } else {
+            next(err);
           }
-          next(err);
         });
     });
 };
@@ -66,7 +67,7 @@ const login = (req, res, next) => {
             const token = jwt.sign({
               _id: user._id,
               expiresIn: '7d', // токен будет просрочен через неделю после создания
-            }, 'super-mega-strong-secret');
+            }, 'super-mega-strong-secret'); // секретное слово
             // JWT прикрепляется к куке
             res.cookie('token', token, { // 1 параметрт просто название, второй параметр это то что мы туда кладём
               maxAge: 3600000 * 24 * 7, // срок хранения 7 дней
@@ -105,8 +106,9 @@ const getUserInfo = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -122,8 +124,9 @@ const getUserById = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Пользователь с указанным _id не найден'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -141,8 +144,9 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -160,8 +164,9 @@ const updateAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении аватара'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
