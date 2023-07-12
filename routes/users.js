@@ -12,7 +12,7 @@ router.get('/', getUsers); // возвращает всех пользовате
 router.get('/me', getUserInfo); // возвращает информацию о текущем пользователе
 router.get('/:userId', celebrate({
   params: Joi.object().keys({
-    id: Joi.string().length(24).hex(),
+    userId: Joi.string().length(24).hex(),
   }),
 }), getUserById); // возвращает пользователя по _id
 router.patch('/me', celebrate({
