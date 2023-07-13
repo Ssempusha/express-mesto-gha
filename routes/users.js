@@ -7,6 +7,7 @@ const {
   updateUser,
   updateAvatar,
 } = require('../controllers/users');
+const { regexUrl } = require('../utils/constants');
 // при обращении к get '/users' и т.д выполнится createUser и т.д
 router.get('/', getUsers); // возвращает всех пользователей
 router.get('/me', getUserInfo); // возвращает информацию о текущем пользователе
@@ -23,7 +24,7 @@ router.patch('/me', celebrate({
 }), updateUser); // обновляет профиль
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required().regex(/^:?https?:\/\/(www\.)?[a-zA-Z\d-]+\.[\w\d\-.~:/?#[\]@!$&'()*+,;=]{2,}#?$/),
+    avatar: Joi.string().required().regex(regexUrl),
   }),
 }), updateAvatar); // обновляет аватар
 

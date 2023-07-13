@@ -35,14 +35,16 @@ const getCards = (req, res, next) => {
 
 // удаляет карточку по идентификатору
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка с указанным _id не найдена');
       } else if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError('У вас недостаточно прав для удаление этой карточки');
       }
-      res.send(card);
+      Card.deleteOne(card)
+        .then(() => res.send({ message: 'Карточка удалена' }))
+        .catch(next);
     })
     .catch((err) => {
       if (err.name === 'CastError') {

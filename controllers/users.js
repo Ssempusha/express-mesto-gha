@@ -78,7 +78,7 @@ const login = (req, res, next) => {
             res.send({ data: user.toJSON() });
           } else {
             // если не совпадает, возвращаем ошибку
-            throw new AuthError('Введены неправильные данные для входа');
+            next(new AuthError('Введены неправильные данные для входа'));
           }
         });
     })

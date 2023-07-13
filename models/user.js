@@ -35,7 +35,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     select: false, // скрывается поле пароля из тела ответа, но в самой базе они остаются
     required: [true, 'Поле "password" должно быть заполнено'],
-    minlength: [8, 'Минимальная длина поля "about" - 8'],
   },
 });
 

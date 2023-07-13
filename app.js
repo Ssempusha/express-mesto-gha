@@ -13,16 +13,21 @@ const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+const { regexUrl } = require('./utils/constants');
+const { limiter } = require('./utils/limiter');
 // приложение прочитает тело запроса и выведет в формате json
 app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
 
+// подключаем rate-limiter
+app.use(limiter);
+
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(/^:?https?:\/\/(www\.)?[a-zA-Z\d-]+\.[\w\d\-.~:/?#[\]@!$&'()*+,;=]{2,}#?$/),
+    avatar: Joi.string().regex(regexUrl),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
