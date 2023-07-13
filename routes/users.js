@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+const { regexUrl } = require('../utils/constants');
 const {
   getUsers,
   getUserInfo,
@@ -7,7 +8,6 @@ const {
   updateUser,
   updateAvatar,
 } = require('../controllers/users');
-const { regexUrl } = require('../utils/constants');
 // при обращении к get '/users' и т.д выполнится createUser и т.д
 router.get('/', getUsers); // возвращает всех пользователей
 router.get('/me', getUserInfo); // возвращает информацию о текущем пользователе
